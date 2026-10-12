@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barangay Management Portal</title>
+    
+    <!-- PURE CSS STYLING (No external Tailwind CDN or remote scripts) -->
+    <style>
+        :root {
+            --primary-green: #15803d;
+            --dark-green: #14532d;
+            --navy: #0f172a;
+            --gold: #eab308;
+            --gold-dark: #ca8a04;
+            --bg-slate: #f8fafc;
+            --text-main: #1e293b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-slate);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--navy);
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--primary-green);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.active {
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .badge-pill {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #34d399;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #34d399;
+            border-radius: 50%;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 16px;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green), var(--navy));
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 32px;
+        }
+
+        .hero-banner h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .hero-banner p {
+            color: #e2e8f0;
+            font-size: 14px;
+            max-width: 600px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            background-color: var(--gold);
+            color: #1e293b;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--gold-dark);
+        }
+
+        .btn-green {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        .btn-green:hover {
+            background-color: var(--dark-green);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media(max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #f8fafc;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--primary-green);
+            background-color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            padding: 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-ready { background: #d1fae5; color: #065f46; }
+        .status-approved { background: #dcfce7; color: #166534; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 4px;
+        }
+
+        .stat-card p {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+            display: none;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: var(--navy);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .certificate-box {
+            border: 8px double var(--primary-green);
+            padding: 40px;
+            background: white;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hidden { display: none !important; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #printableCertificate, #printableCertificate * { visibility: visible; }
+            #printableCertificate { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-area" onclick="switchView('resident')">
+                    <div class="logo-icon">BS</div>
+                    <div>
+                        <p style="font-size: 10px; color: var(--gold); font-weight: bold; text-transform: uppercase;">Republic of the Philippines</p>
+                        <h1 style="font-size: 16px; font-weight: bold;">BARANGAY SAN JOSE</h1>
+                        <p style="font-size: 11px; color: #94a3b8;">City of Manila</p>
+                    </div>
+                </div>
+                <div class="nav-links">
+                    <button onclick="switchView('resident')" id="navResBtn" class="nav-btn active">Resident Portal</button>
+                    <button onclick="switchView('admin')" id="navAdminBtn" class="nav-btn">Admin Dashboard</button>
+                </div>
+                <div class="badge-pill">
+                    <div class="dot"></div>
+                    <span id="roleLabel">Resident View</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        
+        <!-- RESIDENT VIEW -->
+        <div id="residentView">
+            <div class="hero-banner">
+                <h2>Barangay San Jose E-Services</h2>
+                <p>Request official barangay clearances, certificates of indigency, and residency quickly online without standing in long queues.</p>
+                <button class="btn" onclick="scrollToForm()">Request a Document</button>
+            </div>
+
+            <div class="grid-2">
+                <!-- Request Form Card -->
+                <div class="card" id="formSection">
+                    <div class="card-header">
+                        <span>Online Document Request Form</span>
+                    </div>
+                    <form onsubmit="submitDocumentRequest(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Document Type *</label>
+                                <select id="docType" required>
+                                    <option value="" disabled selected>Select document...</option>
+                                    <option value="Barangay Clearance">Barangay Clearance</option>
+                                    <option value="Certificate of Indigency">Certificate of Indigency</option>
+                                    <option value="Certificate of Residency">Certificate of Residency</option>
+                                    <option value="Business Clearance">Business Clearance</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" id="reqName" placeholder="e.g. Juan De La Cruz" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Contact Number *</label>
+                                <input type="text" id="reqContact" placeholder="09171234567" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Purok / Address *</label>
+                                <input type="text" id="reqAddress" placeholder="Purok 1, San Jose St." required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Purpose of Request *</label>
+                            <textarea id="reqPurpose" rows="2" placeholder="e.g. Employment, Financial Assistance" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-green" style="width: 100%;">Submit Request</button>
+                    </form>
+                </div>
+
+                <!-- Emergency Contacts -->
+                <div class="card">
+                    <div class="card-header" style="color: #dc2626;">Emergency Hotlines</div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+                        <div style="background: #fef2f2; padding: 10px; border-radius: 8px; border: 1px solid #fee2e2;">
+                            <strong>Barangay Hall Desk:</strong> (02) 8123-4567
+                        </div>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <strong>Health Center:</strong> 0917-888-9999
+                        </div>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <strong>Police Outpost:</strong> 911 / 0998-111-2222
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tracking Table -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Track Your Document Requests</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ref Code</th>
+                            <th>Applicant</th>
+                            <th>Document</th>
+                            <th>Date Requested</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="residentRequestTable">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div id="adminView" class="hidden">
+            
+            <!-- Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div>
+                        <p>Total Population</p>
+                        <h3 id="statPop">0</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div>
+                        <p>Households</p>
+                        <h3 id="statHouseholds">0</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div>
+                        <p>Senior Citizens</p>
+                        <h3 id="statSeniors">0</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div>
+                        <p>Pending Requests</p>
+                        <h3 id="statRequests" style="color: #d97706;">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Census Management Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Census & Resident Data Management</span>
+                    <button class="btn btn-green" onclick="openCensusModal()" style="font-size: 12px; padding: 6px 12px;">+ Add Resident</button>
+                </div>
+
+                <div style="margin-bottom: 16px; display: flex; gap: 12px;">
+                    <input type="text" id="searchInput" oninput="filterCensus()" placeholder="Search resident by name..." style="max-width: 300px;">
+                    <select id="purokFilter" onchange="filterCensus()" style="max-width: 180px;">
+                        <option value="ALL">All Puroks</option>
+                        <option value="Purok 1">Purok 1</option>
+                        <option value="Purok 2">Purok 2</option>
+                        <option value="Purok 3">Purok 3</option>
+                        <option value="Purok 4">Purok 4</option>
+                        <option value="Purok 5">Purok 5</option>
+                    </select>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Resident Name</th>
+                            <th>Age / Gender</th>
+                            <th>Purok / Address</th>
+                            <th>Civil Status</th>
+                            <th>Tags</th>
+                            <th style="text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="censusTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Document Request Admin Management Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Manage Resident Document Requests</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ref Code</th>
+                            <th>Applicant</th>
+                            <th>Document Type</th>
+                            <th>Contact / Date</th>
+                            <th>Status Control</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminRequestTable">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ADD/EDIT CENSUS MODAL -->
+    <div id="censusModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Resident Census Record</h3>
+                <button onclick="closeCensusModal()" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="saveCensus(event)">
+                    <input type="hidden" id="editCensusId">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="cenName" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Age *</label>
+                            <input type="number" id="cenAge" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender *</label>
+                            <select id="cenGender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Purok *</label>
+                            <select id="cenPurok">
+                                <option value="Purok 1">Purok 1</option>
+                                <option value="Purok 2">Purok 2</option>
+                                <option value="Purok 3">Purok 3</option>
+                                <option value="Purok 4">Purok 4</option>
+                                <option value="Purok 5">Purok 5</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Civil Status</label>
+                            <select id="cenCivil">
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Widowed">Widowed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address / Street</label>
+                        <input type="text" id="cenAddress" placeholder="123 San Jose St." required>
+                    </div>
+                    <div style="display: flex; gap: 16px; margin-bottom: 20px; font-size: 13px;">
+                        <label><input type="checkbox" id="cenIsHead"> Household Head</label>
+                        <label><input type="checkbox" id="cenIsVoter"> Registered Voter</label>
+                    </div>
+                    <button type="submit" class="btn btn-green" style="width: 100%;">Save Resident</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINT CERTIFICATE MODAL -->
+    <div id="printModal" class="modal">
+        <div class="modal-content" style="max-width: 750px;">
+            <div class="modal-header no-print">
+                <h3>Official Certificate Preview</h3>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-green" onclick="window.print()" style="padding: 4px 10px; font-size: 12px;">Print</button>
+                    <button onclick="closePrintModal()" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">&times;</button>
+                </div>
+            </div>
+            <div style="padding: 24px; background: #e2e8f0;">
+                <div id="printableCertificate" class="certificate-box">
+                    <div style="text-align: center; border-bottom: 2px solid var(--primary-green); padding-bottom: 16px; margin-bottom: 24px;">
+                        <p style="font-size: 11px; text-transform: uppercase;">Republic of the Philippines</p>
+                        <p style="font-size: 11px; text-transform: uppercase;">City of Manila</p>
+                        <h2 style="font-size: 20px; color: var(--dark-green); margin-top: 4px;">BARANGAY SAN JOSE</h2>
+                    </div>
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <h3 id="certTitle" style="font-size: 22px; text-transform: uppercase; letter-spacing: 1px;">BARANGAY CLEARANCE</h3>
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.8; text-align: justify; margin-bottom: 40px;">
+                        <p><strong>TO WHOM IT MAY CONCERN:</strong></p>
+                        <br>
+                        <p>This is to certify that <strong id="certName" style="text-decoration: underline;">[NAME]</strong>, of legal age, Filipino citizen, and a permanent resident of <strong id="certAddressText">[ADDRESS]</strong>, has no derogatory record filed in this barangay.</p>
+                        <br>
+                        <p>This certification is issued upon the request of the interested party for <strong id="certPurposeText">[PURPOSE]</strong>.</p>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; text-align: center;">
+                        <div>
+                            <div style="border-bottom: 1px solid #000; width: 200px; padding-bottom: 4px; font-weight: bold;">HON. ROBERTO V. SANTOS</div>
+                            <p style="font-size: 12px; margin-top: 4px;">Punong Barangay</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initial Mock Data
+        let censusData = JSON.parse(localStorage.getItem('bsj_census')) || [
+            { id: '1', name: 'Juan De La Cruz', age: 34, gender: 'Male', purok: 'Purok 1', address: '123 Sampaguita St.', civil: 'Married', isHead: true, isVoter: true },
+            { id: '2', name: 'Maria Santos', age: 65, gender: 'Female', purok: 'Purok 2', address: '45 Mayon St.', civil: 'Widowed', isHead: true, isVoter: true },
+            { id: '3', name: 'Pedro Penduko', age: 22, gender: 'Male', purok: 'Purok 3', address: '78 Mabini St.', civil: 'Single', isHead: false, isVoter: true }
+        ];
+
+        let requestsData = JSON.parse(localStorage.getItem('bsj_requests')) || [
+            { id: 'BSJ-101', name: 'Juan De La Cruz', docType: 'Barangay Clearance', purpose: 'Employment', contact: '09171234567', date: '2026-10-10', status: 'Ready for Pickup' },
+            { id: 'BSJ-102', name: 'Pedro Penduko', docType: 'Certificate of Indigency', purpose: 'Medical', contact: '09189876543', date: '2026-10-11', status: 'Pending' }
+        ];
+
+        function saveData() {
+            localStorage.setItem('bsj_census', JSON.stringify(censusData));
+            localStorage.setItem('bsj_requests', JSON.stringify(requestsData));
+        }
+
+        function switchView(view) {
+            const resView = document.getElementById('residentView');
+            const adminView = document.getElementById('adminView');
+            const roleLabel = document.getElementById('roleLabel');
+            const resBtn = document.getElementById('navResBtn');
+            const adminBtn = document.getElementById('navAdminBtn');
+
+            if (view === 'resident') {
+                resView.classList.remove('hidden');
+                adminView.classList.add('hidden');
+                roleLabel.textContent = 'Resident View';
+                resBtn.classList.add('active');
+                adminBtn.classList.remove('active');
+                renderResidentRequests();
+            } else {
+                resView.classList.add('hidden');
+                adminView.classList.remove('hidden');
+                roleLabel.textContent = 'Admin Dashboard';
+                adminBtn.classList.add('active');
+                resBtn.classList.remove('active');
+                renderAdminDashboard();
+            }
+        }
+
+        function scrollToForm() {
+            document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Resident Request Handling
+        function submitDocumentRequest(e) {
+            e.preventDefault();
+            const newReq = {
+                id: 'BSJ-' + Math.floor(100 + Math.random() * 900),
+                name: document.getElementById('reqName').value,
+                docType: document.getElementById('docType').value,
+                purpose: document.getElementById('reqPurpose').value,
+                contact: document.getElementById('reqContact').value,
+                date: new Date().toISOString().split('T')[0],
+                status: 'Pending'
+            };
+
+            requestsData.unshift(newReq);
+            saveData();
+            renderResidentRequests();
+            e.target.reset();
+            alert('Request submitted successfully! Ref Code: ' + newReq.id);
+        }
+
+        function getBadgeClass(status) {
+            if (status === 'Pending') return 'status-pending';
+            if (status === 'Ready for Pickup') return 'status-ready';
+            if (status === 'Approved') return 'status-approved';
+            return 'status-rejected';
+        }
+
+        function renderResidentRequests() {
+            const tbody = document.getElementById('residentRequestTable');
+            tbody.innerHTML = '';
+            if (requestsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #94a3b8;">No requests found.</td></tr>`;
+                return;
+            }
+            requestsData.forEach(r => {
+                const canPrint = r.status === 'Ready for Pickup' || r.status === 'Approved';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${r.id}</strong></td>
+                        <td>${r.name}</td>
+                        <td>${r.docType}</td>
+                        <td>${r.date}</td>
+                        <td><span class="status-badge ${getBadgeClass(r.status)}">${r.status}</span></td>
+                        <td>
+                            ${canPrint ? `<button class="btn btn-green" style="padding: 4px 8px; font-size: 11px;" onclick="openPrintModal('${r.id}')">Print</button>` : '<span style="color:#94a3b8; font-size:12px;">In Review</span>'}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Admin Dashboard Handling
+        function renderAdminDashboard() {
+            document.getElementById('statPop').textContent = censusData.length;
+            document.getElementById('statHouseholds').textContent = censusData.filter(c => c.isHead).length;
+            document.getElementById('statSeniors').textContent = censusData.filter(c => c.age >= 60).length;
+            document.getElementById('statRequests').textContent = requestsData.filter(r => r.status === 'Pending').length;
+
+            renderCensusTable();
+            renderAdminRequestsTable();
+        }
+
+        function renderCensusTable(list = censusData) {
+            const tbody = document.getElementById('censusTableBody');
+            tbody.innerHTML = '';
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #94a3b8;">No residents found.</td></tr>`;
+                return;
+            }
+            list.forEach(c => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${c.name}</strong></td>
+                        <td>${c.age} y/o (${c.gender})</td>
+                        <td>${c.purok} - ${c.address}</td>
+                        <td>${c.civil}</td>
+                        <td>
+                            ${c.isHead ? '<span style="background:#dbeafe; color:#1e40af; padding:2px 6px; border-radius:4px; font-size:10px;">Head</span>' : ''}
+                            ${c.isVoter ? '<span style="background:#f3e8ff; color:#6b21a8; padding:2px 6px; border-radius:4px; font-size:10px;">Voter</span>' : ''}
+                            ${c.age >= 60 ? '<span style="background:#fef3c7; color:#92400e; padding:2px 6px; border-radius:4px; font-size:10px;">Senior</span>' : ''}
+                        </td>
+                        <td style="text-align: center;">
+                            <button onclick="deleteCensus('${c.id}')" style="background:#fee2e2; color:#991b1b; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterCensus() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const p = document.getElementById('purokFilter').value;
+            const filtered = censusData.filter(c => {
+                const matchName = c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q);
+                const matchPurok = p === 'ALL' || c.purok === p;
+                return matchName && matchPurok;
+            });
+            renderCensusTable(filtered);
+        }
+
+        function renderAdminRequestsTable() {
+            const tbody = document.getElementById('adminRequestTable');
+            tbody.innerHTML = '';
+            requestsData.forEach(r => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${r.id}</strong></td>
+                        <td>${r.name}</td>
+                        <td>${r.docType}</td>
+                        <td>${r.contact} <br><span style="font-size:11px; color:#64748b;">${r.date}</span></td>
+                        <td>
+                            <select onchange="updateStatus('${r.id}', this.value)" style="padding: 4px; font-size: 12px;">
+                                <option value="Pending" ${r.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Ready for Pickup" ${r.status === 'Ready for Pickup' ? 'selected' : ''}>Ready for Pickup</option>
+                                <option value="Approved" ${r.status === 'Approved' ? 'selected' : ''}>Approved</option>
+                                <option value="Rejected" ${r.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateStatus(id, status) {
+            const req = requestsData.find(r => r.id === id);
+            if (req) {
+                req.status = status;
+                saveData();
+                renderAdminDashboard();
+            }
+        }
+
+        function openCensusModal() {
+            document.getElementById('censusModal').classList.add('open');
+        }
+
+        function closeCensusModal() {
+            document.getElementById('censusModal').classList.remove('open');
+        }
+
+        function saveCensus(e) {
+            e.preventDefault();
+            const newRes = {
+                id: Date.now().toString(),
+                name: document.getElementById('cenName').value,
+                age: parseInt(document.getElementById('cenAge').value),
+                gender: document.getElementById('cenGender').value,
+                purok: document.getElementById('cenPurok').value,
+                civil: document.getElementById('cenCivil').value,
+                address: document.getElementById('cenAddress').value,
+                isHead: document.getElementById('cenIsHead').checked,
+                isVoter: document.getElementById('cenIsVoter').checked
+            };
+            censusData.unshift(newRes);
+            saveData();
+            closeCensusModal();
+            renderAdminDashboard();
+        }
+
+        function deleteCensus(id) {
+            if (confirm("Are you sure you want to delete this resident record?")) {
+                censusData = censusData.filter(c => c.id !== id);
+                saveData();
+                renderAdminDashboard();
+            }
+        }
+
+        function openPrintModal(id) {
+            const req = requestsData.find(r => r.id === id);
+            if (!req) return;
+            document.getElementById('certTitle').textContent = req.docType;
+            document.getElementById('certName').textContent = req.name;
+            document.getElementById('certAddressText').textContent = req.purpose;
+            document.getElementById('printModal').classList.add('open');
+        }
+
+        function closePrintModal() {
+            document.getElementById('printModal').classList.remove('open');
+        }
+
+        window.onload = function() {
+            renderResidentRequests();
+        };
+    </script>
+</body>
+</html>
